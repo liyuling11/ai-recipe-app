@@ -7,7 +7,6 @@
     <style>
         /* ================= 变量定义与主题切换 ================= */
         :root {
-            /* 白天模式颜色 */
             --bg-color: #eef2f6;
             --text-color: #2c3e50;
             --sub-text: #7f8c8d;
@@ -21,7 +20,6 @@
         }
 
         [data-theme="dark"] {
-            /* 黑夜模式颜色 (护眼暗色) */
             --bg-color: #121212;
             --text-color: #e0e0e0;
             --sub-text: #a0a0a0;
@@ -34,7 +32,7 @@
             --result-border: #5dade2;
         }
 
-        /* ================= 基础样式 ================= */
+        /* ================= 基础样式与整体放大 ================= */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -50,117 +48,157 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
-            background-image: radial-gradient(circle at 10% 20%, rgba(52, 152, 219, 0.1) 0%, transparent 20%),
-                              radial-gradient(circle at 90% 80%, rgba(46, 204, 113, 0.1) 0%, transparent 20%);
+            padding: 30px;
+            overflow: hidden; /* 防止背景图标导致出现滚动条 */
+            position: relative;
         }
 
-        /* 毛玻璃卡片效果 */
+        /* ================= 动漫美食背景漂浮特效 ================= */
+        .floating-food {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.15; /* 调低透明度，不干扰主体 */
+            animation: floatBackground 10s infinite linear;
+            z-index: -1;
+            user-select: none;
+        }
+
+        /* 在不同位置随机分布 */
+        .food-1 { top: 10%; left: 10%; animation-duration: 12s; font-size: 50px; }
+        .food-2 { top: 20%; right: 15%; animation-duration: 15s; animation-delay: 2s; }
+        .food-3 { bottom: 15%; left: 20%; animation-duration: 18s; animation-delay: 1s; font-size: 60px; }
+        .food-4 { bottom: 20%; right: 10%; animation-duration: 14s; animation-delay: 3s; }
+        .food-5 { top: 50%; left: 5%; animation-duration: 20s; animation-delay: 4s; font-size: 45px;}
+        .food-6 { top: 60%; right: 8%; animation-duration: 16s; animation-delay: 1.5s; }
+
+        @keyframes floatBackground {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(15deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        /* 卡片整体放大 */
         .container {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 50px 60px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
             width: 100%;
-            max-width: 600px;
+            max-width: 850px;
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 10;
         }
 
-        /* ================= 头部与主题切换按钮 ================= */
+        /* ================= 顶部控制区 ================= */
+        .controls {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .control-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        /* ================= 头部 ================= */
         .header {
             text-align: center;
-            margin-bottom: 25px;
-            position: relative;
-        }
-
-        .theme-toggle {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            transition: transform 0.3s;
-        }
-        .theme-toggle:hover {
-            transform: rotate(20deg) scale(1.1);
+            margin-bottom: 40px;
+            margin-top: 10px;
         }
 
         h1 {
             color: var(--text-color);
-            margin-bottom: 10px;
-            font-size: 24px;
+            margin-bottom: 15px;
+            font-size: 32px;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
         }
 
         .subtitle {
             color: var(--sub-text);
-            font-size: 14px;
+            font-size: 16px;
         }
 
-        /* ================= 动漫素材 (小猫/厨师) ================= */
-        .anime-cat {
+        /* 动漫素材动效 */
+        .anime-icon {
             font-size: 40px;
             display: inline-block;
-            animation: float 3s ease-in-out infinite;
+            animation: bounce 2s ease-in-out infinite;
         }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         /* ================= 输入区 ================= */
         .input-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
+            gap: 15px;
+            margin-bottom: 35px;
         }
 
         input[type="text"] {
             flex: 1;
-            padding: 14px 18px;
+            padding: 18px 24px;
             border: 2px solid var(--border-color);
             background-color: var(--input-bg);
             color: var(--text-color);
-            border-radius: 12px;
-            font-size: 16px;
+            border-radius: 16px;
+            font-size: 18px;
             outline: none;
             transition: all 0.3s;
         }
 
         input[type="text"]:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
         }
 
         button#generateBtn {
-            padding: 14px 28px;
+            padding: 18px 36px;
             background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
+            border-radius: 16px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+            white-space: nowrap;
         }
 
         button#generateBtn:hover {
             background-color: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.5);
         }
 
         button#generateBtn:disabled {
@@ -173,83 +211,103 @@
         /* ================= 结果展示区 ================= */
         .result-box {
             display: none;
-            margin-top: 20px;
-            padding: 25px;
+            margin-top: 30px;
+            padding: 35px;
             background-color: var(--result-bg);
-            border-left: 6px solid var(--result-border);
-            border-radius: 12px;
+            border-left: 8px solid var(--result-border);
+            border-radius: 16px;
             animation: slideUp 0.5s ease-out;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .result-box h3 {
             color: var(--text-color);
-            margin-bottom: 15px;
-            font-size: 20px;
+            margin-bottom: 20px;
+            font-size: 26px;
             display: flex;
             align-items: center;
             gap: 10px;
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 15px;
         }
 
         .result-box p {
-            line-height: 1.8;
+            line-height: 1.9;
             color: var(--text-color);
-            margin-bottom: 12px;
-            font-size: 15px;
+            margin-bottom: 15px;
+            font-size: 17px;
         }
 
-        /* ================= 动画与加载 ================= */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        /* 加载动画（带美食图标跳动） */
         .loader {
             display: none;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 30px;
             color: var(--primary-color);
             font-weight: bold;
-            font-size: 16px;
+            font-size: 18px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .loader::after {
-            content: " 🍳 正在为你烹饪灵感...";
-            animation: blink 1.5s infinite;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.02); }
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 480px) {
+        /* ================= 响应式设计 (手机端适配) ================= */
+        @media (max-width: 768px) {
+            .container { padding: 30px 20px; }
             .input-group { flex-direction: column; }
             button#generateBtn { width: 100%; }
-            .container { padding: 25px; }
+            h1 { font-size: 24px; }
+            .controls { top: 15px; right: 15px; }
+            .result-box { padding: 20px; }
+            .result-box h3 { font-size: 20px; }
+            .floating-food { display: none; } /* 手机端隐藏背景以防卡顿 */
         }
     </style>
 </head>
 <body>
 
+    <!-- 动漫美食背景图标（悬浮层） -->
+    <div class="floating-food food-1">🍣</div>
+    <div class="floating-food food-2">🍩</div>
+    <div class="floating-food food-3">🍜</div>
+    <div class="floating-food food-4">🍓</div>
+    <div class="floating-food food-5">🥐</div>
+    <div class="floating-food food-6">🍤</div>
+
     <div class="container">
-        <div class="header">
-            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换白天/黑夜模式">☀️</button>
-            <h1>
-                <span class="anime-cat">🐱</span> 
-                AI 智能菜谱推荐 
-                <span class="anime-cat">👨‍🍳</span>
-            </h1>
-            <p class="subtitle">输入你冰箱里的食材，AI 帮你决定今天吃什么</p>
+        <!-- 顶部控制按钮 -->
+        <div class="controls">
+            <button class="control-btn" id="langToggle" onclick="toggleLanguage()" title="Switch Language">🌐 EN</button>
+            <button class="control-btn" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">☀️</button>
         </div>
 
+        <!-- 头部区域 -->
+        <div class="header">
+            <h1>
+                <span class="anime-icon">🐱</span> 
+                <span id="ui-title">AI 智能菜谱推荐</span> 
+                <span class="anime-icon">👨‍🍳</span>
+            </h1>
+            <p class="subtitle" id="ui-subtitle">输入你冰箱里的食材，AI 帮你决定今天吃什么</p>
+        </div>
+
+        <!-- 输入区 -->
         <div class="input-group">
-            <input type="text" id="ingredientInput" placeholder="例如：番茄, 鸡蛋, 土豆...">
+            <input type="text" id="ingredientInput" placeholder="例如：番茄, 鸡蛋, 土豆, 牛肉...">
             <button id="generateBtn" onclick="generateRecipe()">生成菜谱</button>
         </div>
 
         <div class="loader" id="loader"></div>
 
+        <!-- 结果区 -->
         <div class="result-box" id="resultBox">
             <h3 id="recipeTitle">菜谱名称</h3>
             <p id="recipeIngredients"><strong>所需食材：</strong></p>
@@ -258,11 +316,54 @@
     </div>
 
     <script>
-        // ================= 1. 黑夜/白天模式切换逻辑 =================
+        // ================= 多语言字典 =================
+        const i18n = {
+            zh: {
+                title: "AI 智能菜谱推荐",
+                subtitle: "输入你冰箱里的食材，AI 帮你决定今天吃什么",
+                placeholder: "例如：🍅番茄, 🥚鸡蛋, 🥩牛肉...",
+                btnGenerate: "生成菜谱",
+                btnLoading: "魔法烹饪中...",
+                loader: "🍳 🥘 🍲 正在为你寻找美食灵感...",
+                ingredients: "所需食材：",
+                steps: "烹饪步骤：",
+                alertEmpty: "肚子空空，请先输入食材哦！🐱"
+            },
+            en: {
+                title: "AI Smart Recipe Recommender",
+                subtitle: "Enter ingredients in your fridge, AI decides what to eat today",
+                placeholder: "e.g., 🍅Tomato, 🥚Egg, 🥩Beef...",
+                btnGenerate: "Generate",
+                btnLoading: "Cooking Magic...",
+                loader: "🍳 🥘 🍲 Finding culinary inspiration...",
+                ingredients: "Ingredients: ",
+                steps: "Steps: ",
+                alertEmpty: "Empty tummy! Please enter ingredients first. 🐱"
+            }
+        };
+
+        let currentLang = 'zh'; 
+
+        function updateUIText() {
+            const t = i18n[currentLang];
+            document.getElementById('ui-title').innerText = t.title;
+            document.getElementById('ui-subtitle').innerText = t.subtitle;
+            document.getElementById('ingredientInput').placeholder = t.placeholder;
+            document.getElementById('generateBtn').innerText = t.btnGenerate;
+            document.getElementById('langToggle').innerText = currentLang === 'zh' ? '🌐 EN' : '🌐 中';
+            document.getElementById('recipeIngredients').innerHTML = `<strong>${t.ingredients}</strong>`;
+            document.getElementById('recipeSteps').innerHTML = `<strong>${t.steps}</strong>`;
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            updateUIText();
+        }
+
+        // ================= 主题切换逻辑 =================
         const themeToggleBtn = document.getElementById('themeToggle');
         const htmlElement = document.documentElement;
 
-        // 检查本地存储中是否有主题偏好
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             htmlElement.setAttribute('data-theme', savedTheme);
@@ -282,53 +383,105 @@
             }
         }
 
-        // ================= 2. 菜谱生成逻辑 =================
+        // ================= 菜谱生成逻辑 (扩充了超多美食动漫图标) =================
         function generateRecipe() {
             const input = document.getElementById('ingredientInput').value.trim();
             const btn = document.getElementById('generateBtn');
             const loader = document.getElementById('loader');
             const resultBox = document.getElementById('resultBox');
+            const t = i18n[currentLang];
 
             if (!input) {
-                alert("请先输入食材哦！🐱");
+                alert(t.alertEmpty);
                 return;
             }
 
             btn.disabled = true;
-            btn.innerText = "思考中...";
+            btn.innerText = t.btnLoading;
             loader.style.display = 'block';
+            loader.innerText = t.loader;
             resultBox.style.display = 'none';
 
-            // 模拟 AI 延迟
             setTimeout(() => {
-                let recipeName = "";
-                let recipeIngredients = "";
-                let steps = "";
+                let recipe = { name: "", ing: "", steps: "" };
+                const lowerInput = input.toLowerCase();
 
-                // 简单的关键词匹配，增加真实感
-                if (input.includes('番茄') || input.includes('西红柿') || input.includes('鸡蛋')) {
-                    recipeName = "🍅 经典家常：番茄炒蛋";
-                    recipeIngredients = "番茄 2个、鸡蛋 3个、葱花少许、盐、糖、食用油";
-                    steps = "1. 番茄切块，鸡蛋打散加少许盐备用。<br>2. 热锅下油，倒入鸡蛋液炒至凝固，盛出备用。<br>3. 锅底留油，下番茄翻炒出汁，加一小勺糖提鲜。<br>4. 倒入炒好的鸡蛋，翻炒均匀，撒上葱花即可出锅。";
-                } else if (input.includes('土豆')) {
-                    recipeName = "🥔 下饭神器：酸辣土豆丝";
-                    recipeIngredients = "土豆 2个、干辣椒、蒜末、白醋、生抽、盐";
-                    steps = "1. 土豆切细丝，放入冷水中浸泡洗去淀粉。<br>2. 热锅凉油，下干辣椒和蒜末爆香。<br>3. 倒入沥干水分的土豆丝大火快炒。<br>4. 顺锅边淋入一勺白醋，加盐和少许生抽，翻炒断生即可。";
+                // 智能匹配逻辑：根据输入的食材赋予不同的动漫美食图标
+                if (input.includes('番茄') || input.includes('西红柿') || lowerInput.includes('tomato') || input.includes('鸡蛋') || lowerInput.includes('egg')) {
+                    if (currentLang === 'zh') {
+                        recipe.name = "🍅 经典家常：番茄炒蛋";
+                        recipe.ing = "番茄 2个、鸡蛋 3个、葱花少许、盐、糖、食用油";
+                        recipe.steps = "1. 番茄切块，鸡蛋打散加少许盐备用。<br>2. 热锅下油，倒入鸡蛋液炒至凝固，盛出备用。<br>3. 锅底留油，下番茄翻炒出汁，加一小勺糖提鲜。<br>4. 倒入炒好的鸡蛋，翻炒均匀，撒上葱花即可出锅。";
+                    } else {
+                        recipe.name = "🍅 Classic: Tomato and Egg Stir-fry";
+                        recipe.ing = "2 Tomatoes, 3 Eggs, chopped green onion, salt, sugar, cooking oil";
+                        recipe.steps = "1. Cut tomatoes into chunks. Beat eggs with a pinch of salt.<br>2. Heat oil, scramble eggs until set, set aside.<br>3. Stir-fry tomatoes until juicy, add a teaspoon of sugar.<br>4. Add eggs back, mix well, garnish with green onions and serve.";
+                    }
+                } else if (input.includes('土豆') || lowerInput.includes('potato')) {
+                    if (currentLang === 'zh') {
+                        recipe.name = "🥔 下饭神器：酸辣土豆丝";
+                        recipe.ing = "土豆 2个、干辣椒、蒜末、白醋、生抽、盐";
+                        recipe.steps = "1. 土豆切细丝，放入冷水中浸泡洗去淀粉。<br>2. 热锅凉油，下干辣椒和蒜末爆香。<br>3. 倒入沥干水分的土豆丝大火快炒。<br>4. 顺锅边淋入一勺白醋，加盐和少许生抽，翻炒断生即可。";
+                    } else {
+                        recipe.name = "🥔 Hot and Sour Shredded Potato";
+                        recipe.ing = "2 Potatoes, dried chili, minced garlic, white vinegar, soy sauce, salt";
+                        recipe.steps = "1. Shred potatoes and soak in cold water to remove starch.<br>2. Heat oil, sauté dried chili and garlic until fragrant.<br>3. Add drained potato shreds and stir-fry over high heat.<br>4. Add a spoonful of vinegar, salt, and soy sauce. Stir-fry until cooked.";
+                    }
+                } else if (input.includes('肉') || input.includes('牛') || input.includes('猪') || input.includes('鸡') || lowerInput.includes('meat') || lowerInput.includes('beef') || lowerInput.includes('pork') || lowerInput.includes('chicken')) {
+                    // 新增：肉类匹配 🥩
+                    if (currentLang === 'zh') {
+                        recipe.name = `🥩 硬核大餐：秘制红烧${input}`;
+                        recipe.ing = `${input} 500g、冰糖、八角、桂皮、生抽、老抽、料酒、姜片`;
+                        recipe.steps = `1. 将 ${input} 切块，冷水下锅加料酒焯水，捞出洗净浮沫。<br>2. 锅中倒少许油，放入冰糖小火炒出糖色。<br>3. 倒入肉块翻炒上色，加入姜片、八角、桂皮炒香。<br>4. 倒入生抽、老抽，加开水没过食材，大火烧开转小火炖煮40分钟。<br>5. 最后大火收汁，出锅装盘！`;
+                    } else {
+                        recipe.name = `🥩 Hearty Meal: Braised ${input}`;
+                        recipe.ing = `500g ${input}, rock sugar, star anise, cinnamon, soy sauce, dark soy sauce, cooking wine, ginger`;
+                        recipe.steps = `1. Cut ${input} into chunks, blanch in cold water with wine, drain and wash.<br>2. Heat a little oil, melt rock sugar over low heat to make caramel.<br>3. Add meat and stir-fry to coat, add ginger, star anise, and cinnamon.<br>4. Add soy sauces and boiling water to cover. Simmer for 40 mins.<br>5. Reduce sauce over high heat, serve and enjoy!`;
+                    }
+                } else if (input.includes('面') || input.includes('粉') || lowerInput.includes('noodle')) {
+                    // 新增：面食匹配 🍜
+                    if (currentLang === 'zh') {
+                        recipe.name = "🍜 碳水快乐：豪华清汤面";
+                        recipe.ing = "面条、青菜、葱花、生抽、香油、一个煎蛋（可选）";
+                        recipe.steps = "1. 碗中放入葱花、两勺生抽、少许香油和盐，用开水冲开做汤底。<br>2. 锅中烧水，将面条煮熟后捞入碗中。<br>3. 烫几片青菜放入碗中。<br>4. 煎一个完美的太阳蛋铺在面上，大功告成！";
+                    } else {
+                        recipe.name = "🍜 Carb Happiness: Deluxe Clear Soup Noodles";
+                        recipe.ing = "Noodles, greens, scallions, soy sauce, sesame oil, fried egg (optional)";
+                        recipe.steps = "1. Put scallions, soy sauce, sesame oil, and salt in a bowl, pour boiling water to make broth.<br>2. Boil noodles until cooked, transfer to the bowl.<br>3. Blanch some greens and add to the bowl.<br>4. Top with a perfect sunny-side-up egg. Done!";
+                    }
+                } else if (input.includes('虾') || input.includes('鱼') || input.includes('海鲜') || lowerInput.includes('shrimp') || lowerInput.includes('fish')) {
+                    // 新增：海鲜匹配 🦐
+                    if (currentLang === 'zh') {
+                        recipe.name = `🦐 鲜味爆发：蒜蓉${input}`;
+                        recipe.ing = `${input} 适量、大量蒜蓉、小米辣、葱花、蒸鱼豉油、热油`;
+                        recipe.steps = `1. 将 ${input} 处理干净，摆盘备用。<br>2. 起锅烧油，将一半蒜蓉和小米辣炒香，加入生抽调味。<br>3. 将炒好的蒜蓉铺在食材上，水开上锅蒸8-10分钟。<br>4. 出锅后撒上葱花和剩下的生蒜蓉，淋上一勺滚烫的热油激发香味！`;
+                    } else {
+                        recipe.name = `🦐 Flavor Explosion: Garlic ${input}`;
+                        recipe.ing = `${input}, lots of minced garlic, chili, scallions, soy sauce, hot oil`;
+                        recipe.steps = `1. Clean ${input} and arrange on a plate.<br>2. Heat oil, sauté half the garlic and chili, season with soy sauce.<br>3. Spread sautéed garlic over the food, steam for 8-10 mins.<br>4. Garnish with scallions and raw garlic, drizzle with sizzling hot oil!`;
+                    }
                 } else {
-                    recipeName = `✨ 创意定制：${input} 鲜香小炒`;
-                    recipeIngredients = `${input}、葱姜蒜、生抽、盐、蚝油`;
-                    steps = `1. 将 ${input} 清洗干净，切成合适的大小备用。<br>2. 起锅烧油，放入葱姜蒜爆香。<br>3. 倒入 ${input} 翻炒均匀，加入生抽和蚝油调味。<br>4. 炒熟后大火收汁，装盘享用。`;
+                    // 通用兜底匹配 🥗
+                    if (currentLang === 'zh') {
+                        recipe.name = `🥗 健康轻食：低脂${input}大拌菜`;
+                        recipe.ing = `${input}、生菜、小番茄、沙拉酱/油醋汁`;
+                        recipe.steps = `1. 将 ${input} 洗净处理，切成适合入口的块状或丝状。<br>2. 准备一个大碗，放入洗净的生菜打底。<br>3. 放入 ${input} 和小番茄。<br>4. 淋上你喜欢的沙拉酱或油醋汁，搅拌均匀即可享用！`;
+                    } else {
+                        recipe.name = `🥗 Healthy Light Meal: ${input} Salad`;
+                        recipe.ing = `${input}, lettuce, cherry tomatoes, salad dressing/vinaigrette`;
+                        recipe.steps = `1. Wash and prepare ${input}, chop into bite-sized pieces.<br>2. Prepare a large bowl with a bed of lettuce.<br>3. Add ${input} and cherry tomatoes.<br>4. Drizzle with your favorite dressing, mix well and enjoy!`;
+                    }
                 }
 
-                document.getElementById('recipeTitle').innerText = recipeName;
-                document.getElementById('recipeIngredients').innerHTML = `<strong>所需食材：</strong> ${recipeIngredients}`;
-                document.getElementById('recipeSteps').innerHTML = `<strong>烹饪步骤：</strong><br>${steps}`;
+                document.getElementById('recipeTitle').innerText = recipe.name;
+                document.getElementById('recipeIngredients').innerHTML = `<strong>${t.ingredients}</strong> ${recipe.ing}`;
+                document.getElementById('recipeSteps').innerHTML = `<strong>${t.steps}</strong><br>${recipe.steps}`;
 
                 btn.disabled = false;
-                btn.innerText = "生成菜谱";
+                btn.innerText = t.btnGenerate;
                 loader.style.display = 'none';
                 resultBox.style.display = 'block';
-            }, 1200); 
+            }, 1500); 
         }
     </script>
 </body>
