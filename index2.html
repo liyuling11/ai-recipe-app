@@ -5,106 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 智能菜谱推荐系统</title>
     <style>
-        /* ================= 样式与之前完全一致，保持可爱风格 ================= */
+        /* ================= 样式与之前完全一致 ================= */
         :root {
-            --bg-color: #eef2f6;
-            --text-color: #2c3e50;
-            --sub-text: #7f8c8d;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --input-bg: #ffffff;
-            --border-color: #d1d8e0;
-            --primary-color: #3498db;
-            --primary-hover: #2980b9;
-            --result-bg: #f8fbff;
-            --result-border: #3498db;
-            --bubble-bg: #ffffff;
-            --bubble-text: #333333;
-            --bubble-shadow: rgba(0,0,0,0.1);
+            --bg-color: #eef2f6; --text-color: #2c3e50; --sub-text: #7f8c8d;
+            --card-bg: rgba(255, 255, 255, 0.85); --input-bg: #ffffff; --border-color: #d1d8e0;
+            --primary-color: #3498db; --primary-hover: #2980b9; --result-bg: #f8fbff; --result-border: #3498db;
+            --bubble-bg: #ffffff; --bubble-text: #333333; --bubble-shadow: rgba(0,0,0,0.1);
         }
-
         [data-theme="dark"] {
-            --bg-color: #121212;
-            --text-color: #e0e0e0;
-            --sub-text: #a0a0a0;
-            --card-bg: rgba(30, 30, 30, 0.85);
-            --input-bg: #2d2d2d;
-            --border-color: #444444;
-            --primary-color: #5dade2;
-            --primary-hover: #3498db;
-            --result-bg: #1e1e1e;
-            --result-border: #5dade2;
-            --bubble-bg: #2d2d2d;
-            --bubble-text: #e0e0e0;
-            --bubble-shadow: rgba(0,0,0,0.5);
+            --bg-color: #121212; --text-color: #e0e0e0; --sub-text: #a0a0a0;
+            --card-bg: rgba(30, 30, 30, 0.85); --input-bg: #2d2d2d; --border-color: #444444;
+            --primary-color: #5dade2; --primary-hover: #3498db; --result-bg: #1e1e1e; --result-border: #5dade2;
+            --bubble-bg: #2d2d2d; --bubble-text: #e0e0e0; --bubble-shadow: rgba(0,0,0,0.5);
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 30px;
-            overflow: hidden; 
-            position: relative;
-        }
-
-        .floating-food {
-            position: absolute;
-            font-size: 50px;
-            opacity: 0.65; 
-            animation: floatBackground 10s infinite linear;
-            z-index: 1; 
-            user-select: none;
-            cursor: pointer;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+        body { background-color: var(--bg-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 30px; overflow: hidden; position: relative; }
+        
+        /* 背景与气泡 */
+        .floating-food { position: absolute; font-size: 50px; opacity: 0.65; animation: floatBackground 10s infinite linear; z-index: 1; user-select: none; cursor: pointer; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .floating-food:hover { transform: scale(1.2) !important; z-index: 20; }
-
-        .speech-bubble {
-            position: absolute;
-            background-color: var(--bubble-bg);
-            color: var(--bubble-text);
-            padding: 8px 14px;
-            border-radius: 16px;
-            font-size: 14px;
-            font-weight: bold;
-            white-space: nowrap;
-            box-shadow: 0 4px 15px var(--bubble-shadow);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 30;
-        }
-
+        .speech-bubble { position: absolute; background-color: var(--bubble-bg); color: var(--bubble-text); padding: 8px 14px; border-radius: 16px; font-size: 14px; font-weight: bold; white-space: nowrap; box-shadow: 0 4px 15px var(--bubble-shadow); opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 30; }
         .floating-food .speech-bubble { bottom: 120%; left: 50%; transform: translateX(-50%) translateY(10px) scale(0.8); }
-        .floating-food .speech-bubble::after {
-            content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px;
-            border-width: 6px; border-style: solid; border-color: var(--bubble-bg) transparent transparent transparent;
-        }
-
+        .floating-food .speech-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: var(--bubble-bg) transparent transparent transparent; }
         .main-cat-wrapper { position: relative; display: inline-flex; cursor: pointer; transition: transform 0.2s; z-index: 50; }
         .main-cat-wrapper:hover { transform: scale(1.15) rotate(5deg); }
-        .main-cat-wrapper .speech-bubble {
-            top: 120%; left: 50%; transform: translateX(-50%) translateY(-10px) scale(0.8);
-            border: 2px solid var(--primary-color);
-        }
-        .main-cat-wrapper .speech-bubble::after {
-            content: ''; position: absolute; bottom: 100%; left: 50%; margin-left: -6px;
-            border-width: 6px; border-style: solid; border-color: transparent transparent var(--bubble-bg) transparent;
-        }
-
+        .main-cat-wrapper .speech-bubble { top: 120%; left: 50%; transform: translateX(-50%) translateY(-10px) scale(0.8); border: 2px solid var(--primary-color); }
+        .main-cat-wrapper .speech-bubble::after { content: ''; position: absolute; bottom: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: transparent transparent var(--bubble-bg) transparent; }
         .speech-bubble.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1) !important; }
 
         .food-1 { top: 10%; left: 10%; animation-duration: 12s; font-size: 60px; }
@@ -113,90 +39,35 @@
         .food-4 { bottom: 20%; right: 10%; animation-duration: 14s; animation-delay: 3s; }
         .food-5 { top: 50%; left: 5%; animation-duration: 20s; animation-delay: 4s; font-size: 55px;}
         .food-6 { top: 60%; right: 8%; animation-duration: 16s; animation-delay: 1.5s; }
+        @keyframes floatBackground { 0% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-40px) rotate(15deg); } 100% { transform: translateY(0) rotate(0deg); } }
 
-        @keyframes floatBackground {
-            0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-40px) rotate(15deg); }
-            100% { transform: translateY(0) rotate(0deg); }
-        }
-
-        .container {
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 50px 60px;
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            width: 100%;
-            max-width: 850px;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            z-index: 10;
-        }
-
+        /* 卡片主体 */
+        .container { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 50px 60px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15); width: 100%; max-width: 850px; position: relative; border: 1px solid rgba(255, 255, 255, 0.3); z-index: 10; }
         .controls { position: absolute; top: 25px; right: 30px; display: flex; gap: 15px; }
-
-        .control-btn {
-            background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color);
-            font-size: 18px; cursor: pointer; padding: 8px 12px; border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: all 0.3s;
-            display: flex; align-items: center; justify-content: center; font-weight: bold;
-        }
-
+        .control-btn { background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); font-size: 18px; cursor: pointer; padding: 8px 12px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: all 0.3s; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .control-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-color: var(--primary-color); }
-
         .header { text-align: center; margin-bottom: 40px; margin-top: 10px; }
-
         h1 { color: var(--text-color); margin-bottom: 15px; font-size: 32px; display: flex; justify-content: center; align-items: center; gap: 15px; }
-
         .subtitle { color: var(--sub-text); font-size: 16px; }
         .anime-icon { font-size: 40px; display: inline-block; }
         .chef-icon { animation: bounce 2s ease-in-out infinite; }
-
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
+        /* 输入区 */
         .input-group { display: flex; gap: 15px; margin-bottom: 35px; }
-
-        input[type="text"] {
-            flex: 1; padding: 18px 24px; border: 2px solid var(--border-color); background-color: var(--input-bg);
-            color: var(--text-color); border-radius: 16px; font-size: 18px; outline: none; transition: all 0.3s;
-        }
-
+        input[type="text"] { flex: 1; padding: 18px 24px; border: 2px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); border-radius: 16px; font-size: 18px; outline: none; transition: all 0.3s; }
         input[type="text"]:focus { border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2); }
-
-        button#generateBtn {
-            padding: 18px 36px; background-color: var(--primary-color); color: white; border: none;
-            border-radius: 16px; font-size: 18px; font-weight: bold; cursor: pointer;
-            transition: all 0.3s; box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4); white-space: nowrap;
-        }
-
+        button#generateBtn { padding: 18px 36px; background-color: var(--primary-color); color: white; border: none; border-radius: 16px; font-size: 18px; font-weight: bold; cursor: pointer; transition: all 0.3s; box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4); white-space: nowrap; }
         button#generateBtn:hover { background-color: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(52, 152, 219, 0.5); }
         button#generateBtn:disabled { background-color: var(--sub-text); cursor: not-allowed; transform: none; box-shadow: none; }
 
-        .result-box {
-            display: none; margin-top: 30px; padding: 35px; background-color: var(--result-bg);
-            border-left: 8px solid var(--result-border); border-radius: 16px;
-            animation: slideUp 0.5s ease-out; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            max-height: 400px; overflow-y: auto; /* 添加滚动条以防联网搜到的菜谱太长 */
-        }
-
-        /* 自定义滚动条 */
+        /* 结果区 */
+        .result-box { display: none; margin-top: 30px; padding: 35px; background-color: var(--result-bg); border-left: 8px solid var(--result-border); border-radius: 16px; animation: slideUp 0.5s ease-out; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-height: 450px; overflow-y: auto; }
         .result-box::-webkit-scrollbar { width: 8px; }
         .result-box::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-
-        .result-box h3 {
-            color: var(--text-color); margin-bottom: 20px; font-size: 26px;
-            display: flex; align-items: center; gap: 10px;
-            border-bottom: 2px dashed var(--border-color); padding-bottom: 15px;
-        }
-
+        .result-box h3 { color: var(--text-color); margin-bottom: 20px; font-size: 26px; display: flex; align-items: center; gap: 10px; border-bottom: 2px dashed var(--border-color); padding-bottom: 15px; }
         .result-box p { line-height: 1.9; color: var(--text-color); margin-bottom: 15px; font-size: 17px; }
-
-        .loader {
-            display: none; text-align: center; margin-top: 30px;
-            color: var(--primary-color); font-weight: bold; font-size: 18px; animation: pulse 1.5s infinite;
-        }
-        
+        .loader { display: none; text-align: center; margin-top: 30px; color: var(--primary-color); font-weight: bold; font-size: 18px; animation: pulse 1.5s infinite; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.02); } }
 
@@ -257,35 +128,23 @@
         // ================= 多语言字典 =================
         const i18n = {
             zh: {
-                title: "AI 智能菜谱推荐",
-                subtitle: "输入你冰箱里的食材，AI 帮你决定今天吃什么",
-                placeholder: "例如：🍅番茄, 🥚鸡蛋, 🥩牛肉...",
-                btnGenerate: "生成菜谱",
-                btnLoading: "联网搜索中...",
-                loader: "🌐 正在连接云端菜谱数据库...",
-                ingredients: "所需食材：",
-                steps: "烹饪步骤：",
-                alertEmpty: "肚子空空，请先输入食材哦！🐱",
-                notFound: "云端没搜到相关菜谱，已为您切换至本地 AI 模拟菜谱 🐾"
+                title: "AI 智能菜谱推荐", subtitle: "输入你冰箱里的食材，AI 帮你决定今天吃什么",
+                placeholder: "例如：🍅番茄, 🥚鸡蛋, 🥩牛肉...", btnGenerate: "生成菜谱", btnLoading: "搜寻中...",
+                loader: "🔍 正在查阅云端与本地秘籍...", ingredients: "所需食材：", steps: "烹饪步骤：",
+                alertEmpty: "肚子空空，请先输入食材哦！🐱", notFound: "未在云端找到该菜谱，已为您从本地秘籍库中挑选："
             },
             en: {
-                title: "AI Smart Recipe Recommender",
-                subtitle: "Enter ingredients in your fridge, AI decides what to eat today",
-                placeholder: "e.g., 🍅Tomato, 🥚Egg, 🥩Beef...",
-                btnGenerate: "Generate",
-                btnLoading: "Searching Web...",
-                loader: "🌐 Connecting to cloud recipe database...",
-                ingredients: "Ingredients: ",
-                steps: "Steps: ",
-                alertEmpty: "Empty tummy! Please enter ingredients first. 🐱",
-                notFound: "Not found online. Switched to local AI recipe. 🐾"
+                title: "AI Smart Recipe Recommender", subtitle: "Enter ingredients in your fridge, AI decides what to eat today",
+                placeholder: "e.g., 🍅Tomato, 🥚Egg, 🥩Beef...", btnGenerate: "Generate", btnLoading: "Searching...",
+                loader: "🔍 Searching cloud and local recipes...", ingredients: "Ingredients: ", steps: "Steps: ",
+                alertEmpty: "Empty tummy! Please enter ingredients first. 🐱", notFound: "Not found online. Selected from local database for you: "
             }
         };
 
         let currentLang = 'zh'; 
 
         const foodChats = {
-            '🐱': { zh: ['喵~ 铲屎官，今天吃什么？', '本喵肚子饿了！', '要不要试试本喵的独家秘方？'], en: ['Meow~ What are we eating today?', 'My tummy is grumbling!', 'Want to try my secret recipe?'] },
+            '🐱': { zh: ['喵~ 铲屎官，今天吃什么？', '本喵肚子饿了！'], en: ['Meow~ What are we eating today?', 'My tummy is grumbling!'] },
             '🍣': { zh: ['新鲜出炉的醋饭哦！', '想蘸点芥末吗？'], en: ['Freshly made sushi rice!', 'Want some wasabi?'] },
             '🍩': { zh: ['要咬我一口吗？', '甜甜的很快乐~'], en: ['Want a bite of me?', 'Sweetness brings joy~'] },
             '🍜': { zh: ['吸溜~ 热乎乎的！', '碳水的快乐！'], en: ['Slurp~ So hot!', 'The joy of carbs!'] },
@@ -297,17 +156,10 @@
         function triggerChat(element, emoji) {
             let existingBubble = element.querySelector('.speech-bubble');
             if (existingBubble) element.removeChild(existingBubble);
-            let bubble = document.createElement('div');
-            bubble.className = 'speech-bubble';
-            let chats = foodChats[emoji][currentLang];
-            bubble.innerText = chats[Math.floor(Math.random() * chats.length)];
-            element.appendChild(bubble);
-            void bubble.offsetWidth; 
-            bubble.classList.add('show');
-            setTimeout(() => {
-                bubble.classList.remove('show');
-                setTimeout(() => { if (bubble.parentNode === element) element.removeChild(bubble); }, 300);
-            }, 3000);
+            let bubble = document.createElement('div'); bubble.className = 'speech-bubble';
+            let chats = foodChats[emoji][currentLang]; bubble.innerText = chats[Math.floor(Math.random() * chats.length)];
+            element.appendChild(bubble); void bubble.offsetWidth; bubble.classList.add('show');
+            setTimeout(() => { bubble.classList.remove('show'); setTimeout(() => { if (bubble.parentNode === element) element.removeChild(bubble); }, 300); }, 3000);
         }
 
         setInterval(() => {
@@ -318,61 +170,117 @@
 
         function updateUIText() {
             const t = i18n[currentLang];
-            document.getElementById('ui-title').innerText = t.title;
-            document.getElementById('ui-subtitle').innerText = t.subtitle;
-            document.getElementById('ingredientInput').placeholder = t.placeholder;
-            document.getElementById('generateBtn').innerText = t.btnGenerate;
+            document.getElementById('ui-title').innerText = t.title; document.getElementById('ui-subtitle').innerText = t.subtitle;
+            document.getElementById('ingredientInput').placeholder = t.placeholder; document.getElementById('generateBtn').innerText = t.btnGenerate;
             document.getElementById('langToggle').innerText = currentLang === 'zh' ? '🌐 EN' : '🌐 中';
             document.getElementById('recipeIngredients').innerHTML = `<strong>${t.ingredients}</strong>`;
             document.getElementById('recipeSteps').innerHTML = `<strong>${t.steps}</strong>`;
         }
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'zh' ? 'en' : 'zh';
-            updateUIText();
-        }
+        function toggleLanguage() { currentLang = currentLang === 'zh' ? 'en' : 'zh'; updateUIText(); }
 
-        const themeToggleBtn = document.getElementById('themeToggle');
-        const htmlElement = document.documentElement;
+        const themeToggleBtn = document.getElementById('themeToggle'); const htmlElement = document.documentElement;
         const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            htmlElement.setAttribute('data-theme', savedTheme);
-            themeToggleBtn.innerText = savedTheme === 'dark' ? '🌙' : '☀️';
-        }
-
+        if (savedTheme) { htmlElement.setAttribute('data-theme', savedTheme); themeToggleBtn.innerText = savedTheme === 'dark' ? '🌙' : '☀️'; }
         function toggleTheme() {
             const currentTheme = htmlElement.getAttribute('data-theme');
-            if (currentTheme === 'dark') {
-                htmlElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light');
-                themeToggleBtn.innerText = '☀️';
-            } else {
-                htmlElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                themeToggleBtn.innerText = '🌙';
-            }
+            if (currentTheme === 'dark') { htmlElement.removeAttribute('data-theme'); localStorage.setItem('theme', 'light'); themeToggleBtn.innerText = '☀️'; } 
+            else { htmlElement.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', 'dark'); themeToggleBtn.innerText = '🌙'; }
         }
 
-        // ================= 核心：真实联网搜索 + 本地兜底 =================
+        // ================= 🌟 超丰富本地菜谱库 (15道经典中英双语) =================
+        const localDatabase = [
+            {
+                keys: ['番茄', '西红柿', 'tomato', '鸡蛋', 'egg'],
+                zh: { name: "🍅 经典家常：番茄炒蛋", ing: "番茄2个、鸡蛋3个、葱花、盐、糖", steps: "1. 番茄切块，鸡蛋打散加盐。<br>2. 热油炒熟鸡蛋盛出。<br>3. 下番茄炒出汁，加糖提鲜。<br>4. 倒回鸡蛋翻炒均匀即可。" },
+                en: { name: "🍅 Classic: Tomato & Egg Stir-fry", ing: "2 Tomatoes, 3 Eggs, scallions, salt, sugar", steps: "1. Chop tomatoes, beat eggs with salt.<br>2. Scramble eggs and set aside.<br>3. Stir-fry tomatoes until juicy, add sugar.<br>4. Add eggs back and mix well." }
+            },
+            {
+                keys: ['土豆', '马铃薯', 'potato'],
+                zh: { name: "🥔 下饭神器：酸辣土豆丝", ing: "土豆2个、干辣椒、蒜末、白醋、生抽", steps: "1. 土豆切细丝，泡冷水去淀粉。<br>2. 爆香蒜末和干辣椒。<br>3. 下土豆丝大火快炒。<br>4. 淋白醋、加盐和生抽出锅。" },
+                en: { name: "🥔 Hot & Sour Shredded Potato", ing: "2 Potatoes, dried chili, garlic, vinegar, soy sauce", steps: "1. Shred potatoes and soak in cold water.<br>2. Sauté garlic and chili.<br>3. Stir-fry potato shreds over high heat.<br>4. Add vinegar, salt, and soy sauce." }
+            },
+            {
+                keys: ['肉丝', '青椒', '猪肉', 'pork', 'pepper'],
+                zh: { name: "🫑 经典小炒：青椒肉丝", ing: "猪瘦肉200g、青椒2个、蒜末、生抽、淀粉", steps: "1. 猪肉切丝，加生抽、淀粉抓匀腌制10分钟。<br>2. 青椒切丝。<br>3. 热油滑熟肉丝盛出。<br>4. 下青椒炒断生，倒回肉丝加盐翻炒出锅。" },
+                en: { name: "🫑 Classic: Shredded Pork with Green Pepper", ing: "200g Pork, 2 Green peppers, garlic, soy sauce, starch", steps: "1. Shred pork, marinate with soy sauce and starch for 10 mins.<br>2. Shred green peppers.<br>3. Stir-fry pork until cooked, set aside.<br>4. Stir-fry peppers, add pork back, season with salt." }
+            },
+            {
+                keys: ['鸡翅', '可乐', 'chicken wing', 'cola'],
+                zh: { name: "🍗 甜咸诱惑：可乐鸡翅", ing: "鸡翅8个、可乐1罐、姜片、生抽、老抽", steps: "1. 鸡翅两面划刀，冷水下锅焯水。<br>2. 锅中少油，将鸡翅煎至两面金黄。<br>3. 倒入可乐、生抽、老抽、姜片。<br>4. 大火烧开转小火炖15分钟，最后大火收汁。" },
+                en: { name: "🍗 Sweet & Savory: Cola Chicken Wings", ing: "8 Chicken wings, 1 can Cola, ginger, soy sauce", steps: "1. Score wings, blanch in cold water.<br>2. Pan-fry wings until golden brown.<br>3. Pour in cola, soy sauces, and ginger.<br>4. Simmer for 15 mins, reduce sauce over high heat." }
+            },
+            {
+                keys: ['豆腐', '麻婆', 'tofu', 'mapo'],
+                zh: { name: "🌶️ 川味经典：麻婆豆腐", ing: "嫩豆腐1块、肉末50g、豆瓣酱、花椒粉、葱花", steps: "1. 豆腐切块，盐水焯水捞出。<br>2. 炒香肉末和豆瓣酱，加适量水烧开。<br>3. 放入豆腐轻推，煮3-5分钟。<br>4. 勾芡出锅，撒上花椒粉和葱花。" },
+                en: { name: "🌶️ Sichuan Classic: Mapo Tofu", ing: "1 Tofu, 50g minced meat, chili bean paste, Sichuan pepper, scallions", steps: "1. Cube tofu, blanch in salt water.<br>2. Sauté minced meat and chili paste, add water.<br>3. Add tofu, simmer for 3-5 mins.<br>4. Thicken sauce, garnish with pepper and scallions." }
+            },
+            {
+                keys: ['虾', '蒜蓉', 'shrimp', 'garlic'],
+                zh: { name: "🦐 鲜美无比：蒜蓉粉丝蒸虾", ing: "大虾10只、粉丝1把、大量蒜蓉、蒸鱼豉油", steps: "1. 粉丝泡软铺盘底，虾开背去虾线铺在粉丝上。<br>2. 一半蒜蓉炒香，与生蒜蓉混合，加生抽调匀。<br>3. 将蒜蓉铺在虾上，水开蒸8分钟。<br>4. 撒葱花，淋热油激发香味。" },
+                en: { name: "🦐 Ultimate Umami: Garlic Steamed Shrimp", ing: "10 Shrimps, glass noodles, lots of garlic, soy sauce", steps: "1. Soak noodles, butterfly shrimp and place on noodles.<br>2. Sauté half garlic, mix with raw garlic and soy sauce.<br>3. Spread garlic on shrimp, steam for 8 mins.<br>4. Garnish with scallions, drizzle with hot oil." }
+            },
+            {
+                keys: ['红烧肉', '五花肉', 'braised pork'],
+                zh: { name: "🍖 软糯香甜：红烧肉", ing: "五花肉500g、冰糖、八角、桂皮、葱姜、生抽、老抽", steps: "1. 五花肉切块，冷水下锅加料酒焯水。<br>2. 小火炒冰糖至枣红色，下五花肉裹上糖色。<br>3. 加葱姜、八角、桂皮炒香，倒生抽老抽。<br>4. 加开水没过肉，小火炖1小时，大火收汁。" },
+                en: { name: "🍖 Melt-in-mouth: Braised Pork Belly", ing: "500g Pork belly, rock sugar, star anise, ginger, soy sauce", steps: "1. Cut pork into chunks, blanch with wine.<br>2. Melt rock sugar, coat pork with caramel color.<br>3. Sauté with spices, add soy sauces.<br>4. Add hot water, simmer for 1 hour, reduce sauce." }
+            },
+            {
+                keys: ['面', '面条', 'noodle', 'noodles'],
+                zh: { name: "🍜 抚慰人心：西红柿鸡蛋面", ing: "挂面1把、番茄1个、鸡蛋1个、葱花、生抽、盐", steps: "1. 番茄切小块，鸡蛋打散。<br>2. 热油炒熟鸡蛋，下番茄炒出红汤。<br>3. 加两碗水烧开，加生抽和盐调味。<br>4. 下挂面煮熟，连汤盛出撒上葱花。" },
+                en: { name: "🍜 Comfort Food: Tomato & Egg Noodles", ing: "Noodles, 1 Tomato, 1 Egg, scallions, soy sauce, salt", steps: "1. Chop tomato, beat egg.<br>2. Scramble egg, stir-fry tomato until juicy.<br>3. Add water, bring to boil, season with soy sauce and salt.<br>4. Add noodles, cook until done, garnish with scallions." }
+            },
+            {
+                keys: ['炒饭', '米饭', 'fried rice', 'rice'],
+                zh: { name: "🍚 快手美味：黄金蛋炒饭", ing: "隔夜米饭1碗、鸡蛋2个、火腿肠1根、葱花、盐", steps: "1. 鸡蛋打散，火腿肠切丁。<br>2. 热锅热油，下鸡蛋液快速滑散。<br>3. 倒入米饭，用锅铲压碎翻炒至粒粒分明。<br>4. 加入火腿丁、盐和葱花，翻炒均匀出锅。" },
+                en: { name: "🍚 Quick & Easy: Golden Egg Fried Rice", ing: "1 bowl leftover rice, 2 Eggs, 1 Sausage, scallions, salt", steps: "1. Beat eggs, dice sausage.<br>2. Heat oil, scramble eggs quickly.<br>3. Add rice, break up lumps, stir-fry until distinct.<br>4. Add sausage, salt, and scallions, stir-fry evenly." }
+            },
+            {
+                keys: ['排骨', '糖醋', 'ribs'],
+                zh: { name: "🍖 酸甜开胃：糖醋排骨", ing: "排骨500g、冰糖、香醋、料酒、生抽、熟白芝麻", steps: "1. 排骨冷水下锅焯水去腥。<br>2. 锅中倒油，下冰糖炒出糖色，倒入排骨翻炒上色。<br>3. 加入没过排骨的开水，加料酒、生抽、香醋。<br>4. 小火炖煮40分钟，最后大火收汁，撒上白芝麻。" },
+                en: { name: "🍖 Appetizing: Sweet and Sour Ribs", ing: "500g Ribs, rock sugar, vinegar, cooking wine, soy sauce, sesame seeds", steps: "1. Blanch ribs in cold water.<br>2. Melt rock sugar, coat ribs with caramel.<br>3. Add hot water, wine, soy sauce, and vinegar.<br>4. Simmer for 40 mins, reduce sauce, garnish with sesame." }
+            },
+            {
+                keys: ['紫菜', '蛋花汤', 'soup', 'seaweed'],
+                zh: { name: "🥣 清淡解腻：紫菜蛋花汤", ing: "紫菜少许、鸡蛋1个、虾皮、葱花、香油、盐", steps: "1. 碗中放入紫菜、虾皮和葱花。<br>2. 鸡蛋打散备用。<br>3. 锅中水烧开，淋入蛋液形成蛋花。<br>4. 将沸水冲入碗中，加盐和香油调味即可。" },
+                en: { name: "🥣 Light & Refreshing: Seaweed Egg Drop Soup", ing: "Seaweed, 1 Egg, dried shrimp, scallions, sesame oil, salt", steps: "1. Put seaweed, shrimp, and scallions in a bowl.<br>2. Beat the egg.<br>3. Boil water, drizzle in egg to form drops.<br>4. Pour boiling water into the bowl, season with salt and sesame oil." }
+            },
+            {
+                keys: ['鱼', '清蒸', 'fish'],
+                zh: { name: "🐟 原汁原味：清蒸鲈鱼", ing: "鲈鱼1条、葱姜丝、蒸鱼豉油、热油", steps: "1. 鲈鱼处理干净，两面划刀，塞入姜片。<br>2. 水开后上锅蒸8-10分钟。<br>3. 倒掉盘中腥水，铺上葱姜丝。<br>4. 淋上蒸鱼豉油，泼上一勺滚烫的热油。" },
+                en: { name: "🐟 Original Flavor: Steamed Sea Bass", ing: "1 Sea bass, ginger, scallions, soy sauce, hot oil", steps: "1. Clean fish, score sides, stuff with ginger.<br>2. Steam for 8-10 mins after water boils.<br>3. Discard water, top with scallions and ginger.<br>4. Drizzle with soy sauce and sizzling hot oil." }
+            },
+            {
+                keys: ['包菜', '卷心菜', 'cabbage'],
+                zh: { name: "🥬 爽脆下饭：手撕包菜", ing: "包菜半个、干辣椒、蒜片、生抽、香醋", steps: "1. 包菜用手撕成小片，洗净沥干。<br>2. 爆香蒜片和干辣椒。<br>3. 倒入包菜大火爆炒至变软。<br>4. 顺锅边淋入香醋和生抽，加盐快速翻炒出锅。" },
+                en: { name: "🥬 Crispy & Tasty: Hand-torn Cabbage", ing: "Half cabbage, dried chili, garlic, soy sauce, vinegar", steps: "1. Tear cabbage into pieces, wash and drain.<br>2. Sauté garlic and chili.<br>3. Stir-fry cabbage over high heat until soft.<br>4. Add vinegar, soy sauce, and salt, stir-fry quickly." }
+            },
+            {
+                keys: ['茄子', '肉末', 'eggplant'],
+                zh: { name: "🍆 软糯鲜香：肉末茄子", ing: "长茄子2个、肉末100g、豆瓣酱、蒜末、葱花", steps: "1. 茄子切条，撒盐腌制10分钟挤出水分。<br>2. 锅中多倒点油，将茄子煎软盛出。<br>3. 炒熟肉末，加豆瓣酱和蒜末炒香。<br>4. 倒入茄子翻炒均匀，撒葱花出锅。" },
+                en: { name: "🍆 Savory: Minced Meat with Eggplant", ing: "2 Eggplants, 100g minced meat, chili bean paste, garlic, scallions", steps: "1. Cut eggplant into strips, salt for 10 mins, squeeze water.<br>2. Pan-fry eggplant until soft, set aside.<br>3. Sauté minced meat, add bean paste and garlic.<br>4. Add eggplant, stir-fry evenly, garnish with scallions." }
+            },
+            {
+                keys: ['鸡胸肉', '宫保鸡丁', 'kung pao', 'chicken'],
+                zh: { name: "🥜 甜酸微辣：宫保鸡丁", ing: "鸡胸肉1块、熟花生米、干辣椒、花椒、葱段、生抽、醋、糖", steps: "1. 鸡胸肉切丁，加料酒、生抽、淀粉腌制。<br>2. 调碗汁：生抽、醋、糖、淀粉、水。<br>3. 炒香干辣椒和花椒，下鸡丁滑熟。<br>4. 倒入碗汁大火收浓，加花生米和葱段翻炒出锅。" },
+                en: { name: "🥜 Sweet & Spicy: Kung Pao Chicken", ing: "1 Chicken breast, peanuts, dried chili, Sichuan pepper, scallions, soy sauce, vinegar, sugar", steps: "1. Dice chicken, marinate with wine, soy sauce, starch.<br>2. Mix sauce: soy sauce, vinegar, sugar, starch, water.<br>3. Sauté chili and pepper, stir-fry chicken.<br>4. Pour in sauce, thicken, add peanuts and scallions." }
+            }
+        ];
 
-        // 中文食材转英文的简单字典，为了去 API 搜索
+        // 中文翻译成英文的关键词字典（去API搜索用）
         const dict = {
             '牛肉': 'beef', '土豆': 'potato', '番茄': 'tomato', '西红柿': 'tomato', '鸡蛋': 'egg', '鸡肉': 'chicken',
             '猪肉': 'pork', '排骨': 'pork', '虾': 'shrimp', '鱼': 'fish', '面条': 'noodle', '面': 'noodle',
-            '米饭': 'rice', '蘑菇': 'mushroom', '香菇': 'mushroom', '豆腐': 'tofu', '白菜': 'cabbage', '洋葱': 'onion'
+            '米饭': 'rice', '炒饭': 'rice', '蘑菇': 'mushroom', '香菇': 'mushroom', '豆腐': 'tofu', '白菜': 'cabbage', '洋葱': 'onion',
+            '鸡翅': 'chicken', '茄子': 'eggplant', '包菜': 'cabbage', '卷心菜': 'cabbage'
         };
 
-        // 将中文输入翻译成英文搜索词
         function translateToEnglish(input) {
-            let engWords = [];
-            for (let key in dict) {
-                if (input.includes(key)) {
-                    engWords.push(dict[key]);
-                }
-            }
-            return engWords.length > 0 ? engWords[0] : input; // 默认取第一个主料去搜
+            for (let key in dict) { if (input.includes(key)) return dict[key]; }
+            return input; // 如果没匹配到，直接拿原词去搜
         }
 
+        // ================= 🚀 核心生成逻辑 =================
         async function generateRecipe() {
             const input = document.getElementById('ingredientInput').value.trim();
             const btn = document.getElementById('generateBtn');
@@ -380,104 +288,88 @@
             const resultBox = document.getElementById('resultBox');
             const t = i18n[currentLang];
 
-            if (!input) {
-                alert(t.alertEmpty);
-                return;
-            }
+            if (!input) { alert(t.alertEmpty); return; }
 
-            btn.disabled = true;
-            btn.innerText = t.btnLoading;
-            loader.style.display = 'block';
-            loader.innerText = t.loader;
-            resultBox.style.display = 'none';
+            btn.disabled = true; btn.innerText = t.btnLoading; loader.style.display = 'block'; loader.innerText = t.loader; resultBox.style.display = 'none';
 
             const searchQuery = translateToEnglish(input.toLowerCase());
+            let apiSuccess = false;
 
+            // 1. 尝试联网搜索（带 3.5 秒超时控制，保证不卡死）
             try {
-                // 1. 尝试去真实的全球菜谱 API 搜索 (TheMealDB)
-                const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchQuery}`);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3500); // 3.5秒超时
+
+                const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchQuery}`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                
                 const data = await response.json();
 
                 if (data.meals && data.meals.length > 0) {
-                    // 找到了真实的菜谱！
-                    const meal = data.meals[0]; // 取第一个结果
-                    
-                    let recipeName = `🌐 云端推荐：${meal.strMeal}`;
+                    const meal = data.meals[0]; 
                     let ingredientsList = [];
-                    // 遍历提取所有的食材 (API 返回的是 strIngredient1 到 strIngredient20)
                     for (let i = 1; i <= 20; i++) {
                         let ing = meal[`strIngredient${i}`];
                         let measure = meal[`strMeasure${i}`];
-                        if (ing && ing.trim() !== '') {
-                            ingredientsList.push(`${ing} ${measure ? '('+measure.trim()+')' : ''}`);
-                        }
+                        if (ing && ing.trim() !== '') ingredientsList.push(`${ing} (${measure ? measure.trim() : ''})`);
                     }
-                    
                     let recipeSteps = meal.strInstructions.replace(/\r\n/g, '<br>').replace(/\n/g, '<br>');
 
-                    document.getElementById('recipeTitle').innerText = recipeName;
+                    document.getElementById('recipeTitle').innerText = `🌐 云端推荐：${meal.strMeal}`;
                     document.getElementById('recipeIngredients').innerHTML = `<strong>${t.ingredients}</strong> ${ingredientsList.join(', ')}`;
-                    document.getElementById('recipeSteps').innerHTML = `<strong>${t.steps}</strong><br><span style="font-size:15px; color:var(--sub-text)">(由于来自国际API，步骤为英文)</span><br>${recipeSteps}`;
+                    // API 返回的步骤是英文的
+                    document.getElementById('recipeSteps').innerHTML = `<strong>${t.steps}</strong><br><span style="font-size:15px; color:var(--sub-text)">(来自国际云端数据库，步骤为英文)</span><br>${recipeSteps}`;
                     
-                    showResult(btn, loader, resultBox, t);
-                    return; // 结束函数
+                    apiSuccess = true;
                 }
             } catch (error) {
-                console.log("API 请求失败，使用本地兜底逻辑", error);
+                console.log("云端搜索超时或被拦截，切换到本地库。");
             }
 
-            // 2. 如果网络错误，或者 API 没搜到（返回 null），走本地兜底逻辑
-            setTimeout(() => {
-                let recipe = { name: "", ing: "", steps: "" };
+            // 2. 如果云端没搜到，立刻执行强大的本地库匹配
+            if (!apiSuccess) {
                 const lowerInput = input.toLowerCase();
-                
-                // 如果没搜到，在标题前加个提示
-                const prefix = currentLang === 'zh' ? '🐾 [本地] ' : '🐾 [Local] ';
+                let matchedRecipe = null;
+                const prefix = currentLang === 'zh' ? '🐾 [本地秘籍] ' : '🐾 [Local Secret] ';
 
-                // ... 这里保留之前的智能组合判断逻辑 ...
-                // 为了节省篇幅，这里保留了最经典的番茄炒蛋和通用小炒，之前的逻辑你都可以粘贴进来
-                if (lowerInput.includes('番茄') || lowerInput.includes('tomato')) {
-                    if (currentLang === 'zh') {
-                        recipe.name = prefix + "🍅 经典家常：番茄炒蛋";
-                        recipe.ing = "番茄 2个、鸡蛋 3个、葱花、盐、糖";
-                        recipe.steps = "1. 番茄切块，鸡蛋打散。<br>2. 热锅下油，炒熟鸡蛋盛出。<br>3. 下番茄炒出汁，加糖提鲜。<br>4. 倒入鸡蛋翻炒均匀即可。";
-                    } else {
-                        recipe.name = prefix + "🍅 Classic: Tomato and Egg Stir-fry";
-                        recipe.ing = "2 Tomatoes, 3 Eggs, scallions, salt, sugar";
-                        recipe.steps = "1. Chop tomatoes, beat eggs.<br>2. Scramble eggs and set aside.<br>3. Stir-fry tomatoes, add sugar.<br>4. Add eggs back and mix well.";
-                    }
-                } else {
-                    if (currentLang === 'zh') {
-                        recipe.name = prefix + `🥘 创意料理：${input} 鲜香小炒`;
-                        recipe.ing = `${input}、葱姜蒜、生抽、盐`;
-                        recipe.steps = `1. 将 ${input} 清洗切块。<br>2. 热油爆香葱姜蒜。<br>3. 倒入食材大火快炒。<br>4. 加调料炒熟出锅。`;
-                    } else {
-                        recipe.name = prefix + `🥘 Creative Dish: Sautéed ${input}`;
-                        recipe.ing = `${input}, ginger, garlic, soy sauce, salt`;
-                        recipe.steps = `1. Wash and chop ${input}.<br>2. Sauté ginger and garlic.<br>3. Stir-fry ingredients over high heat.<br>4. Season and serve.`;
+                // 遍历本地 15 道菜谱，只要命中任意一个关键词就匹配
+                for (let recipe of localDatabase) {
+                    if (recipe.keys.some(k => lowerInput.includes(k))) {
+                        matchedRecipe = recipe;
+                        break;
                     }
                 }
 
-                // 提示用户没搜到
-                if (currentLang === 'zh') {
-                    recipe.steps = `<span style="color:#e74c3c; font-weight:bold;">${t.notFound}</span><br><br>` + recipe.steps;
+                // 组装数据
+                let finalName, finalIng, finalSteps;
+                const notFoundMsg = `<span style="color:#e74c3c; font-weight:bold;">${t.notFound}</span><br><br>`;
+
+                if (matchedRecipe) {
+                    // 命中了具体的菜谱
+                    finalName = prefix + matchedRecipe[currentLang].name;
+                    finalIng = matchedRecipe[currentLang].ing;
+                    finalSteps = matchedRecipe[currentLang].steps;
                 } else {
-                    recipe.steps = `<span style="color:#e74c3c; font-weight:bold;">${t.notFound}</span><br><br>` + recipe.steps;
+                    // 真的没匹配到（比如输入了"龙肉"），给出终极创意兜底
+                    if (currentLang === 'zh') {
+                        finalName = prefix + `🥘 创意料理：${input} 鲜香小炒`;
+                        finalIng = `${input}、葱姜蒜、生抽、盐`;
+                        finalSteps = `1. 将 ${input} 清洗切块。<br>2. 热油爆香葱姜蒜。<br>3. 倒入食材大火快炒。<br>4. 加调料炒熟出锅。`;
+                    } else {
+                        finalName = prefix + `🥘 Creative Dish: Sautéed ${input}`;
+                        finalIng = `${input}, ginger, garlic, soy sauce, salt`;
+                        finalSteps = `1. Wash and chop ${input}.<br>2. Sauté ginger and garlic.<br>3. Stir-fry ingredients over high heat.<br>4. Season and serve.`;
+                    }
                 }
 
-                document.getElementById('recipeTitle').innerText = recipe.name;
-                document.getElementById('recipeIngredients').innerHTML = `<strong>${t.ingredients}</strong> ${recipe.ing}`;
-                document.getElementById('recipeSteps').innerHTML = `<strong>${t.steps}</strong><br>${recipe.steps}`;
-                
-                showResult(btn, loader, resultBox, t);
-            }, 1000); 
-        }
+                document.getElementById('recipeTitle').innerText = finalName;
+                document.getElementById('recipeIngredients').innerHTML = `<strong>${t.ingredients}</strong> ${finalIng}`;
+                // 只有在没搜到云端时，才在步骤前面加红字提示
+                document.getElementById('recipeSteps').innerHTML = `<strong>${t.steps}</strong><br>${notFoundMsg}${finalSteps}`;
+            }
 
-        function showResult(btn, loader, resultBox, t) {
-            btn.disabled = false;
-            btn.innerText = t.btnGenerate;
-            loader.style.display = 'none';
-            resultBox.style.display = 'block';
+            // 恢复按钮状态
+            btn.disabled = false; btn.innerText = t.btnGenerate; loader.style.display = 'none'; resultBox.style.display = 'block';
         }
     </script>
 </body>
