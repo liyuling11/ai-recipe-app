@@ -143,14 +143,82 @@
 
         let currentLang = 'zh'; 
 
+             // ================= 🌟 超丰富互动台词库 =================
         const foodChats = {
-            '🐱': { zh: ['喵~ 铲屎官，今天吃什么？', '本喵肚子饿了！'], en: ['Meow~ What are we eating today?', 'My tummy is grumbling!'] },
-            '🍣': { zh: ['新鲜出炉的醋饭哦！', '想蘸点芥末吗？'], en: ['Freshly made sushi rice!', 'Want some wasabi?'] },
-            '🍩': { zh: ['要咬我一口吗？', '甜甜的很快乐~'], en: ['Want a bite of me?', 'Sweetness brings joy~'] },
-            '🍜': { zh: ['吸溜~ 热乎乎的！', '碳水的快乐！'], en: ['Slurp~ So hot!', 'The joy of carbs!'] },
-            '🍓': { zh: ['我今天超甜！', '酸酸甜甜就是我！'], en: ['I am super sweet today!', 'Sweet and sour, that\'s me!'] },
-            '🥐': { zh: ['酥酥脆脆的~', '搭配咖啡绝配！'], en: ['Crispy and flaky~', 'Perfect with coffee!'] },
-            '🍤': { zh: ['咔滋咔滋！', '高蛋白，没负担！'], en: ['Crunch crunch!', 'High protein, no guilt!'] }
+            '🐱': { 
+                zh: [
+                    '喵~ 铲屎官，今天吃什么？', '本喵肚子饿了！', '要不要试试本喵的独家秘方？', 
+                    '别看了，快去做饭！', '喵喵喵？(翻译：快输入食材)', '给本喵来条小鱼干！',
+                    '今天也是为干饭努力的一天呢！', '你盯着屏幕看，菜会自己飞进嘴里吗？', 
+                    '铲屎官，你的厨艺退步了吗？', '本喵闻到了肉的味道！', '没有猫条的饭是不完整的！'
+                ], 
+                en: [
+                    'Meow~ What are we eating today?', 'My tummy is grumbling!', 'Want to try my secret recipe?', 
+                    'Stop staring, go cook!', 'Meow? (Translation: Enter ingredients now)', 'Give me a dried fish!',
+                    'Working hard for food today too!', 'Staring at the screen won\'t cook the food!', 
+                    'Has your cooking skill degraded?', 'I smell meat!', 'A meal without treats is incomplete!'
+                ] 
+            },
+            '🍣': { 
+                zh: [
+                    '新鲜出炉的醋饭哦！', '想蘸点芥末吗？', '一口吃掉我吧！', '刚捕捞的海鲜最棒了！', 
+                    '师傅的手艺可是一绝~', '饭团里藏着惊喜哦！', '要加点酱油吗？', '这刀工，绝了！'
+                ], 
+                en: [
+                    'Freshly made sushi rice!', 'Want some wasabi?', 'Take a bite of me!', 'Freshly caught seafood is the best!', 
+                    'The chef\'s skills are top-notch~', 'There\'s a surprise in the rice ball!', 'Need some soy sauce?', 'Look at these knife skills!'
+                ] 
+            },
+            '🍩': { 
+                zh: [
+                    '要咬我一口吗？', '甜甜的很快乐~', '小心长胖哦！', '我是草莓味的！', 
+                    '中间的洞是用来透风的~', '糖霜沾到嘴上了啦！', '减肥是明天的事！', '卡路里就是力量！'
+                ], 
+                en: [
+                    'Want a bite of me?', 'Sweetness brings joy~', 'Careful with the calories!', 'I\'m strawberry flavored!', 
+                    'The hole in the middle is for ventilation~', 'You got frosting on your mouth!', 'Dieting is for tomorrow!', 'Calories are power!'
+                ] 
+            },
+            '🍜': { 
+                zh: [
+                    '吸溜~ 热乎乎的！', '记得趁热吃！', '碳水的快乐！', '叉烧给我多加两片！', 
+                    '溏心蛋是我的灵魂！', '喝完这口汤，元气满满！', '小心烫嘴哦！', '大口嗦面才过瘾！'
+                ], 
+                en: [
+                    'Slurp~ So hot and tasty!', 'Eat it while it\'s hot!', 'The joy of carbs!', 'Add two more slices of pork!', 
+                    'The soft-boiled egg is my soul!', 'Finish the broth for full energy!', 'Watch out, it\'s hot!', 'Big bites of noodles are the best!'
+                ] 
+            },
+            '🍓': { 
+                zh: [
+                    '我今天超甜！', '春天来啦~', '酸酸甜甜就是我！', '采摘我的时候要温柔哦~', 
+                    '维C满满，变漂亮！', '不要把我做成草莓酱啦！', '我头上有个小皇冠！', '红彤彤的多可爱呀！'
+                ], 
+                en: [
+                    'I am super sweet today!', 'Spring is here~', 'Sweet and sour, that\'s me!', 'Be gentle when picking me~', 
+                    'Full of Vitamin C, stay pretty!', 'Don\'t turn me into jam!', 'I have a little crown on my head!', 'Aren\'t I lovely in red?'
+                ] 
+            },
+            '🥐': { 
+                zh: [
+                    '酥酥脆脆的~', '早安，来顿早餐吧！', '搭配咖啡绝配！', '一层一层的起酥，工艺极高！', 
+                    '阳光、报纸和我最配~', '掉在桌上的碎屑也是美味！', '我肚子里是空空的~', '法式浪漫了解一下？'
+                ], 
+                en: [
+                    'Crispy and flaky~', 'Good morning, time for breakfast!', 'Perfect with coffee!', 'So many layers of pastry!', 
+                    'Sunshine, newspaper, and me~', 'The crumbs on the table are also delicious!', 'I am hollow inside~', 'A touch of French romance?'
+                ] 
+            },
+            '🍤': { 
+                zh: [
+                    '咔滋咔滋！', '高蛋白，没负担！', '炸物万岁！', '记得沾点番茄酱！', 
+                    '金黄酥脆，天下第一！', '别捏我的尾巴！', '面衣裹得刚刚好~', '再挤点柠檬汁吧！'
+                ], 
+                en: [
+                    'Crunch crunch!', 'High protein, no guilt!', 'Long live fried food!', 'Remember to dip in ketchup!', 
+                    'Golden and crispy, number one!', 'Don\'t pinch my tail!', 'The batter is just perfect~', 'Squeeze some lemon juice!'
+                ] 
+            }
         };
 
         function triggerChat(element, emoji) {
