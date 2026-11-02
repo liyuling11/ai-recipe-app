@@ -5,145 +5,250 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 智能菜谱推荐系统</title>
     <style>
-        /* CSS 样式部分 - 负责美观和排版 */
+        /* ================= 变量定义与主题切换 ================= */
+        :root {
+            /* 白天模式颜色 */
+            --bg-color: #eef2f6;
+            --text-color: #2c3e50;
+            --sub-text: #7f8c8d;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --input-bg: #ffffff;
+            --border-color: #d1d8e0;
+            --primary-color: #3498db;
+            --primary-hover: #2980b9;
+            --result-bg: #f8fbff;
+            --result-border: #3498db;
+        }
+
+        [data-theme="dark"] {
+            /* 黑夜模式颜色 (护眼暗色) */
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --sub-text: #a0a0a0;
+            --card-bg: rgba(30, 30, 30, 0.85);
+            --input-bg: #2d2d2d;
+            --border-color: #444444;
+            --primary-color: #5dade2;
+            --primary-hover: #3498db;
+            --result-bg: #1e1e1e;
+            --result-border: #5dade2;
+        }
+
+        /* ================= 基础样式 ================= */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         body {
-            background-color: #f4f7f6;
-            color: #333;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            background-image: radial-gradient(circle at 10% 20%, rgba(52, 152, 219, 0.1) 0%, transparent 20%),
+                              radial-gradient(circle at 90% 80%, rgba(46, 204, 113, 0.1) 0%, transparent 20%);
         }
 
+        /* 毛玻璃卡片效果 */
         .container {
-            background: #fff;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 600px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* ================= 头部与主题切换按钮 ================= */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        .theme-toggle:hover {
+            transform: rotate(20deg) scale(1.1);
         }
 
         h1 {
-            text-align: center;
-            color: #2c3e50;
+            color: var(--text-color);
             margin-bottom: 10px;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
 
         .subtitle {
-            text-align: center;
-            color: #7f8c8d;
-            margin-bottom: 30px;
+            color: var(--sub-text);
             font-size: 14px;
         }
 
+        /* ================= 动漫素材 (小猫/厨师) ================= */
+        .anime-cat {
+            font-size: 40px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* ================= 输入区 ================= */
         .input-group {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         input[type="text"] {
             flex: 1;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            padding: 14px 18px;
+            border: 2px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border-radius: 12px;
             font-size: 16px;
             outline: none;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
         }
 
         input[type="text"]:focus {
-            border-color: #3498db;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
 
-        button {
-            padding: 12px 24px;
-            background-color: #3498db;
+        button#generateBtn {
+            padding: 14px 28px;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
             font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
 
-        button:hover {
-            background-color: #2980b9;
+        button#generateBtn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
         }
 
-        button:disabled {
-            background-color: #bdc3c7;
+        button#generateBtn:disabled {
+            background-color: var(--sub-text);
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
+        /* ================= 结果展示区 ================= */
         .result-box {
-            display: none; /* 默认隐藏，生成后显示 */
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f9fbfd;
-            border-left: 5px solid #3498db;
-            border-radius: 4px;
-            animation: fadeIn 0.5s ease-in-out;
+            display: none;
+            margin-top: 20px;
+            padding: 25px;
+            background-color: var(--result-bg);
+            border-left: 6px solid var(--result-border);
+            border-radius: 12px;
+            animation: slideUp 0.5s ease-out;
         }
 
         .result-box h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .result-box p {
-            line-height: 1.6;
-            color: #555;
-            margin-bottom: 10px;
+            line-height: 1.8;
+            color: var(--text-color);
+            margin-bottom: 12px;
+            font-size: 15px;
         }
 
-        /* 加载动画 */
+        /* ================= 动画与加载 ================= */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .loader {
             display: none;
             text-align: center;
             margin-top: 20px;
-            color: #3498db;
+            color: var(--primary-color);
             font-weight: bold;
+            font-size: 16px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .loader::after {
+            content: " 🍳 正在为你烹饪灵感...";
+            animation: blink 1.5s infinite;
         }
 
-        /* 响应式设计：适配手机端 */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* 响应式设计 */
         @media (max-width: 480px) {
-            .input-group {
-                flex-direction: column;
-            }
-            button {
-                width: 100%;
-            }
+            .input-group { flex-direction: column; }
+            button#generateBtn { width: 100%; }
+            .container { padding: 25px; }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🍳 AI 智能菜谱推荐</h1>
-        <p class="subtitle">输入你冰箱里的食材，AI 帮你决定今天吃什么</p>
+        <div class="header">
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换白天/黑夜模式">☀️</button>
+            <h1>
+                <span class="anime-cat">🐱</span> 
+                AI 智能菜谱推荐 
+                <span class="anime-cat">👨‍🍳</span>
+            </h1>
+            <p class="subtitle">输入你冰箱里的食材，AI 帮你决定今天吃什么</p>
+        </div>
 
         <div class="input-group">
-            <input type="text" id="ingredientInput" placeholder="例如：鸡蛋, 番茄, 土豆">
+            <input type="text" id="ingredientInput" placeholder="例如：番茄, 鸡蛋, 土豆...">
             <button id="generateBtn" onclick="generateRecipe()">生成菜谱</button>
         </div>
 
-        <div class="loader" id="loader">AI 正在思考中，请稍候...</div>
+        <div class="loader" id="loader"></div>
 
         <div class="result-box" id="resultBox">
             <h3 id="recipeTitle">菜谱名称</h3>
@@ -153,46 +258,77 @@
     </div>
 
     <script>
-        // JavaScript 逻辑部分 - 负责交互功能
-        
+        // ================= 1. 黑夜/白天模式切换逻辑 =================
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        // 检查本地存储中是否有主题偏好
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            htmlElement.setAttribute('data-theme', savedTheme);
+            themeToggleBtn.innerText = savedTheme === 'dark' ? '🌙' : '☀️';
+        }
+
+        function toggleTheme() {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                htmlElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeToggleBtn.innerText = '☀️';
+            } else {
+                htmlElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeToggleBtn.innerText = '🌙';
+            }
+        }
+
+        // ================= 2. 菜谱生成逻辑 =================
         function generateRecipe() {
             const input = document.getElementById('ingredientInput').value.trim();
             const btn = document.getElementById('generateBtn');
             const loader = document.getElementById('loader');
             const resultBox = document.getElementById('resultBox');
 
-            // 1. 检查用户是否输入了内容
             if (!input) {
-                alert("请先输入食材哦！");
+                alert("请先输入食材哦！🐱");
                 return;
             }
 
-            // 2. 显示加载状态，隐藏旧结果
             btn.disabled = true;
-            btn.innerText = "生成中...";
+            btn.innerText = "思考中...";
             loader.style.display = 'block';
             resultBox.style.display = 'none';
 
-            // 3. 模拟 AI 请求延迟（1.5秒后返回结果）
+            // 模拟 AI 延迟
             setTimeout(() => {
-                // 模拟 AI 返回的假数据
-                const recipeName = `特制【${input}】大杂烩`;
-                const steps = `1. 将 ${input} 洗净切块备用。<br>
-                               2. 热锅凉油，放入食材翻炒至断生。<br>
-                               3. 加入适量的盐、生抽和少许水，焖煮3-5分钟。<br>
-                               4. 大火收汁，出锅装盘！`;
+                let recipeName = "";
+                let recipeIngredients = "";
+                let steps = "";
 
-                // 4. 将数据填入页面
+                // 简单的关键词匹配，增加真实感
+                if (input.includes('番茄') || input.includes('西红柿') || input.includes('鸡蛋')) {
+                    recipeName = "🍅 经典家常：番茄炒蛋";
+                    recipeIngredients = "番茄 2个、鸡蛋 3个、葱花少许、盐、糖、食用油";
+                    steps = "1. 番茄切块，鸡蛋打散加少许盐备用。<br>2. 热锅下油，倒入鸡蛋液炒至凝固，盛出备用。<br>3. 锅底留油，下番茄翻炒出汁，加一小勺糖提鲜。<br>4. 倒入炒好的鸡蛋，翻炒均匀，撒上葱花即可出锅。";
+                } else if (input.includes('土豆')) {
+                    recipeName = "🥔 下饭神器：酸辣土豆丝";
+                    recipeIngredients = "土豆 2个、干辣椒、蒜末、白醋、生抽、盐";
+                    steps = "1. 土豆切细丝，放入冷水中浸泡洗去淀粉。<br>2. 热锅凉油，下干辣椒和蒜末爆香。<br>3. 倒入沥干水分的土豆丝大火快炒。<br>4. 顺锅边淋入一勺白醋，加盐和少许生抽，翻炒断生即可。";
+                } else {
+                    recipeName = `✨ 创意定制：${input} 鲜香小炒`;
+                    recipeIngredients = `${input}、葱姜蒜、生抽、盐、蚝油`;
+                    steps = `1. 将 ${input} 清洗干净，切成合适的大小备用。<br>2. 起锅烧油，放入葱姜蒜爆香。<br>3. 倒入 ${input} 翻炒均匀，加入生抽和蚝油调味。<br>4. 炒熟后大火收汁，装盘享用。`;
+                }
+
                 document.getElementById('recipeTitle').innerText = recipeName;
-                document.getElementById('recipeIngredients').innerHTML = `<strong>所需食材：</strong> ${input}、葱姜蒜、调味料`;
+                document.getElementById('recipeIngredients').innerHTML = `<strong>所需食材：</strong> ${recipeIngredients}`;
                 document.getElementById('recipeSteps').innerHTML = `<strong>烹饪步骤：</strong><br>${steps}`;
 
-                // 5. 恢复按钮状态，显示结果，隐藏加载动画
                 btn.disabled = false;
                 btn.innerText = "生成菜谱";
                 loader.style.display = 'none';
                 resultBox.style.display = 'block';
-            }, 1500); 
+            }, 1200); 
         }
     </script>
 </body>
